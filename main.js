@@ -1,3 +1,13 @@
+// var requirejs = function(){
+// 	var rjs = require('requirejs');
+// 	if(!rjs) {
+// 		return require;
+// 	}
+// 	else {
+// 		return rjs;
+// 	}
+// }();
+
 require.config({
 	paths: {
 		Camera: 'app/Camera',
