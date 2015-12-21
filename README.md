@@ -22,3 +22,5 @@ A basic usage example could be:
       require(['CameraExecutor'],function(executor){
             executor.patrol(p1);
       }
+      
+The executor.patrol invocation will resolve all steps defined in the array p1. The order execution is positional array based.
