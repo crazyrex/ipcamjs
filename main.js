@@ -36,6 +36,10 @@ require(['q','app/CameraExecutor'],function(Q,executor){
 
 	/*patrol presets */
 	var presets = [executor.preset1,executor.preset2]
+
+	executor.preset1().forEach(function(p){
+		console.log(p.toString());
+	})
 	var i = -1;
 
 	function* preset(){
@@ -51,7 +55,7 @@ require(['q','app/CameraExecutor'],function(Q,executor){
  		var pr = preset();
  		var aPFunc = pr.next().value;
  		var aP = aPFunc();
-// 	console.log("scheduling patrol: "+aP);
+ 		console.log("scheduling patrol: "+aP);
  		return Q.fcall(executor.patrol(aP));
  	}
 

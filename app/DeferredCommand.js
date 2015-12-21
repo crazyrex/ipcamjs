@@ -10,7 +10,7 @@ define(['q', 'app/XhrPromise'], function(Q, xhr){
 
   var DeferredCommand = {};
 
-  function command(id,action, duration){
+  function command(id,action,duration){
     //console.log("created: "+this.id+" - "+this.action+" - "+this.duration);
     this.id= id;
     this.action = action;

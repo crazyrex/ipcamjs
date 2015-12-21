@@ -1,6 +1,6 @@
 define(['q'], function(Q){
   var xhr = {}
-  var get = function (url) {
+  var get = function (url,delay) {
       console.info("Invoking: "+url)
       var request = new XMLHttpRequest();
       var deferred = Q.defer();
@@ -17,7 +17,14 @@ define(['q'], function(Q){
 
       function onload() {
           if (request.status === 200) {
-              deferred.resolve(request.responseText);
+              if(typeof delay === 'number'){
+                setTimeout(function(){
+                    deferred.resolve(request.responseText);
+                }, delay);
+              }
+              else{
+                deferred.resolve(request.responseText);
+              }
           } else {
               deferred.reject(new Error("Status code was " + request.status));
           }

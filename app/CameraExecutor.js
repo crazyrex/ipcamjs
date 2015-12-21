@@ -48,37 +48,42 @@ define(['q', 'app/DeferredCommand', 'app/Camera'], function(Q,c,camera){
     this.command = function(){
       return c.defer(id(),target, duration);
     };
+    this.toString = function(){
+      return this.target+" - "+this.duration;
+    }
   }
+
 
   var p1 = function(){
     return [
-      new step(encoder(move,"preset1")).command,
-      new step(encoder(velocity,slow)).command,
-      new step(encoder(move,right)).command,
-      new step(encoder(stop,right)).command,
-      new step(encoder(move,left)).command,
-      new step(encoder(stop,left)).command,
-      new step(encoder(move,right)).command,
-      new step(encoder(stop,right)).command,
-      new step(encoder(move,left)).command,
-      new step(encoder(stop,left)).command
+      new step(proxy+encoder(move,"preset1"), stopTime).command,
+      new step(proxy+encoder(velocity,slow),3000).command,
+      new step(proxy+encoder(move,right,moveTime)).command,
+      new step(proxy+encoder(stop,right),stopTime).command,
+      new step(proxy+encoder(move,left),moveTime).command,
+      new step(proxy+encoder(stop,left),stopTime).command,
+      new step(proxy+encoder(move,right),moveTime).command,
+      new step(proxy+encoder(stop,right),stopTime).command,
+      new step(proxy+encoder(move,left),moveTime).command,
+      new step(proxy+encoder(stop,left),stopTime).command
     ]
   };
 
   var p2 = function(){
     return [
-      new step(encoder(move,"preset2")).command,
-      new step(encoder(velocity,slow)).command,
-      new step(encoder(move,right)).command,
-      new step(encoder(stop,right)).command,
-      new step(encoder(move,left)).command,
-      new step(encoder(stop,left)).command,
-      new step(encoder(move,right)).command,
-      new step(encoder(stop,right)).command,
-      new step(encoder(move,left)).command,
-      new step(encoder(stop,left)).command
+      new step(proxy+encoder(move,"preset2"), stopTime).command,
+      new step(proxy+encoder(velocity,slow),3000).command,
+      new step(proxy+encoder(move,right,moveTime)).command,
+      new step(proxy+encoder(stop,right),stopTime).command,
+      new step(proxy+encoder(move,left),moveTime).command,
+      new step(proxy+encoder(stop,left),stopTime).command,
+      new step(proxy+encoder(move,right),moveTime).command,
+      new step(proxy+encoder(stop,right),stopTime).command,
+      new step(proxy+encoder(move,left),moveTime).command,
+      new step(proxy+encoder(stop,left),stopTime).command
     ]
   };
+
 
 
   var preset2 = function(){
