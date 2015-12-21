@@ -17,4 +17,8 @@ A basic usage example could be:
           new step(encoder(move,left)).command,
           new step(encoder(stop,left)).command
         ]
-    };
+      };
+      
+      require(['CameraExecutor'],function(executor){
+            executor.patrol(p1);
+      }
