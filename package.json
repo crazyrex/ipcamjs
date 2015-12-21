@@ -1,8 +1,8 @@
 {
-  "name": "xtag-example",
+  "name": "ipcamjs",
   "private": true,
   "version": "0.0.1",
-  "description": "Xtag working example",
+  "description": "Library for create custom command for generic IpCamera",
   "repository": "",
   "license": "MIT",
   "devDependencies": {

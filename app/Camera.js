@@ -30,6 +30,8 @@ define([], function(){
 
 			move : {
 				action: "decoder_control.cgi",
+				preset1: "31",
+				preset2: "33",
 				up: "0",
 				down: "2",
 				left: "6",
@@ -72,6 +74,12 @@ define([], function(){
 			}
 			else if(value === "down"){
 				cmd+=move.down;
+			}
+			else if(value === "preset1"){
+				cmd+=move.preset1+"&sit="+move.preset1;
+			}
+			else if(value === "preset2"){
+				cmd+=move.preset2+"&sit="+move.preset2;
 			}
 			cmd+="&onestep=0";
 			return cmd;

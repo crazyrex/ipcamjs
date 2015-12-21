@@ -2,7 +2,7 @@ require.config({
 	paths: {
 		Camera: 'app/Camera',
 		XhrPromise: 'app/XhrPromise',
-		Scheduler: 'app/Scheduler',
+		CameraExecutor: 'app/CameraExecutor',
 		DeferredCommand: 'app/DeferredCommand',
 		q: 'public/components/q/q'
 	},
@@ -15,7 +15,7 @@ require.config({
 });
 
 
-require(['q','app/Scheduler'],function(Q,scheduler){
+require(['q','app/CameraExecutor'],function(Q,executor){
 
 	function* rand(){
 		var index = 0;
@@ -24,8 +24,10 @@ require(['q','app/Scheduler'],function(Q,scheduler){
 		}
 	}
 
-	var presets = [scheduler.preset1,scheduler.preset2]
+	/*patrol presets */
+	var presets = [executor.preset1,executor.preset2]
 	var i = -1;
+
 	function* preset(){
 
 			while(true){
@@ -34,13 +36,13 @@ require(['q','app/Scheduler'],function(Q,scheduler){
 			}
 		}
 
- /*schedule next patrol preset*/
- var schedule = function() {
+ /*execute next patrol preset*/
+ var execute = function() {
  		var pr = preset();
  		var aPFunc = pr.next().value;
  		var aP = aPFunc();
-// 		console.log("scheduling patrol: "+aP);
- 		return Q.fcall(scheduler.patrol(aP));
+// 	console.log("scheduling patrol: "+aP);
+ 		return Q.fcall(executor.patrol(aP));
  	}
 
 	var delay = function(t){
@@ -49,18 +51,30 @@ require(['q','app/Scheduler'],function(Q,scheduler){
 
 	var first = rand();
 
-	/*wait rand seconds before execute*/
-	var execute = function(){
+	/*wait rand seconds and schedule next execution*/
+	var schedule = function(){
 		var t = first.next().value*1000;
 	//	console.log("waiting for: "+t+" ms");
-		delay(t).then(schedule);
+		delay(t).then(execute);
 	}
 
-  /*execute immediately*/
-	execute();
+
 	/*and every T minutes*/
-	var minutes = 30;
-	var millis = minutes*60*1000;
-	setInterval(execute,millis);
+	// var minutes = 30;
+	// var millis = minutes*60*1000;
+	//setInterval(execute,millis);
+
+	/*schedule immediately*/
+	schedule();
+
+	/*then loop the schedule of next patrol every random T minutes*/
+	(function loop() {
+    var randMinutes = Math.round(Math.random() * (60 - 10)) + 1;
+		var	millis = randMinutes * 60 * 1000;
+    setTimeout(function() {
+            schedule();
+            loop();
+    }, millis);
+	}());
 
 })

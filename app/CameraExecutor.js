@@ -1,9 +1,15 @@
+/**
+  Camera Executor provides methods to create steps and execute an array of steps
+  An array of steps, usually could be a preset of commands that define a patrol mode instance.
+**/
 define(['q', 'app/DeferredCommand', 'app/Camera'], function(Q,c,camera){
-  //console.log("Scheduler deps: "+c+" - "+camera);
-  var scheduler={};
-
+  //console.log("executor deps: "+c+" - "+camera);
   camera.credentials.login="";
   camera.credentials.pwd="";
+
+  var executor={};
+
+  var encoder = camera.methods.decode;
 
   var stopTime = 30000;
   var moveTime = 10000;
@@ -16,15 +22,64 @@ define(['q', 'app/DeferredCommand', 'app/Camera'], function(Q,c,camera){
   var slow ="slow";
   var proxy = "http://127.0.0.1:1337/";
 
+  /**
+    Patrol function run all steps passed in input
+  **/
   var patrol = function(steps){
-
     var result = Q(function(){});
-    steps.forEach(function (step) {
-      result = result.then(step);
+    steps.forEach(function (s) {
+      result = result.then(s);
     });
     return result;
-
   }
+
+  /**
+    Step function create a Promised step.
+    target is a String representing the url to invoke
+    duration is the duration of the stepin millis.
+    When duration timeouts the promise will be resolved.
+  **/
+  var step = function(target,duration){
+    function id(){
+      return Math.random() * (1024 - 1) + 1;
+    }
+    this.target = target;
+    this.duration = duration;
+    this.command = function(){
+      return c.defer(id(),target, duration);
+    };
+  }
+
+  var p1 = function(){
+    return [
+      new step(encoder(move,"preset1")).command,
+      new step(encoder(velocity,slow)).command,
+      new step(encoder(move,right)).command,
+      new step(encoder(stop,right)).command,
+      new step(encoder(move,left)).command,
+      new step(encoder(stop,left)).command,
+      new step(encoder(move,right)).command,
+      new step(encoder(stop,right)).command,
+      new step(encoder(move,left)).command,
+      new step(encoder(stop,left)).command
+    ]
+  };
+
+  var p2 = function(){
+    return [
+      new step(encoder(move,"preset2")).command,
+      new step(encoder(velocity,slow)).command,
+      new step(encoder(move,right)).command,
+      new step(encoder(stop,right)).command,
+      new step(encoder(move,left)).command,
+      new step(encoder(stop,left)).command,
+      new step(encoder(move,right)).command,
+      new step(encoder(stop,right)).command,
+      new step(encoder(move,left)).command,
+      new step(encoder(stop,left)).command
+    ]
+  };
+
 
   var preset2 = function(){
     var preset = "192.168.0.2:81/decoder_control.cgi?loginuse="+camera.credentials.login+"&loginpas="+camera.credentials.pwd+"&command=33&onestep=0&sit=33"
@@ -86,9 +141,9 @@ define(['q', 'app/DeferredCommand', 'app/Camera'], function(Q,c,camera){
     //presetCmd().then(slowCmd).then(rightCmd).then(stopRightCmd).then(leftCmd).then(stopLeftCmd).done();
     return [presetCmd,slowCmd,rightCmd,stopRightCmd,leftCmd,stopLeftCmd];
   };
-  scheduler.patrol = patrol;
-  scheduler.preset1 = preset1;
-  scheduler.preset2 = preset2;
-  return scheduler;
+  executor.patrol = patrol;
+  executor.preset1 = p1;
+  executor.preset2 = p2;
+  return executor;
 
 });

@@ -1,3 +1,11 @@
+/**
+  A DeferredCommand provides the defer method to create
+  a promise of an XHR Get invocation that will be resolved
+  after the input passed duration.  Actually the the DeferredCommand use a just promised XHR
+  Because a bug of Q library the rejection of the promised XHR can not be propagated
+  to the the promised delay. A possible solution is to encapsulate the Q.defer and a non-promised XHR and resolve the defer
+  after a setTimeout or a Q.delay call.
+**/
 define(['q', 'app/XhrPromise'], function(Q, xhr){
 
   var DeferredCommand = {};
