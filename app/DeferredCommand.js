@@ -6,7 +6,8 @@
   to the the promised delay. A possible solution is to encapsulate the Q.defer and a non-promised XHR and resolve the defer
   after a setTimeout or a Q.delay call.
 **/
-define(['q', 'app/XhrPromise'], function(Q, xhr){
+//define(['q', 'app/XhrPromise'], function(Q, xhr){
+define(['q', 'app/DelayedXhrPromise'], function(Q, xhr){
 
   var DeferredCommand = {};
 
@@ -28,6 +29,11 @@ define(['q', 'app/XhrPromise'], function(Q, xhr){
 
   command.prototype.toString=function(){
     return ""+this.id+" - "+this.action+" - "+this.duration
+  }
+
+  command.prototype.runDeferred = function(){
+    var promise = xhr.get(this.action,this.duration);
+    return promise;
   }
 
   command.prototype.run= function(){
@@ -58,7 +64,13 @@ define(['q', 'app/XhrPromise'], function(Q, xhr){
     return deferred.promise;
   }
 
+  function defer(id,action,duration){
+    var aCmd = new command(id,action, duration);
+    return aCmd.runDeferred();
+  }
+
   DeferredCommand.command = command;
-  DeferredCommand.defer = deferredCmd;
+  //DeferredCommand.defer = deferredCmd;
+  DeferredCommand.defer = defer;
   return DeferredCommand;
 });
